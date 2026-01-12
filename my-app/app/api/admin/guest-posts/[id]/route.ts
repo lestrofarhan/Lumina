@@ -1,20 +1,23 @@
-// app/api/admin/guest-posts/[id]/route.ts
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { GuestPost } from "@/models/GuestPost";
 import { Blog } from "@/models/Blog";
 
-interface Params {
-  params: {
+// Next.js 16 requirement: params must be a Promise
+interface RouteContext {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 // GET single guest post
-export async function GET(req: Request, { params }: Params) {
+export async function GET(req: NextRequest, { params }: RouteContext) {
   try {
     await connectDB();
-    const guestPost = await GuestPost.findById(params.id);
+
+    // Await the params before using the id
+    const { id } = await params;
+    const guestPost = await GuestPost.findById(id);
 
     if (!guestPost) {
       return NextResponse.json(
@@ -31,12 +34,15 @@ export async function GET(req: Request, { params }: Params) {
 }
 
 // PUT - Update guest post (for approve/reject)
-export async function PUT(req: Request, { params }: Params) {
+export async function PUT(req: NextRequest, { params }: RouteContext) {
   try {
     await connectDB();
+
+    // Await the params before using the id
+    const { id } = await params;
     const data = await req.json();
 
-    const guestPost = await GuestPost.findByIdAndUpdate(params.id, data, {
+    const guestPost = await GuestPost.findByIdAndUpdate(id, data, {
       new: true,
     });
 
@@ -55,11 +61,13 @@ export async function PUT(req: Request, { params }: Params) {
 }
 
 // DELETE guest post
-export async function DELETE(req: Request, { params }: Params) {
+export async function DELETE(req: NextRequest, { params }: RouteContext) {
   try {
     await connectDB();
 
-    const guestPost = await GuestPost.findByIdAndDelete(params.id);
+    // Await the params before using the id
+    const { id } = await params;
+    const guestPost = await GuestPost.findByIdAndDelete(id);
 
     if (!guestPost) {
       return NextResponse.json(

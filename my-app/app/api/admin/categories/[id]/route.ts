@@ -1,18 +1,22 @@
 // app/api/admin/categories/[id]/route.ts
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { Category } from "@/models/Category";
 
-interface Params {
-  params: {
+// Next.js 16 requires params to be a Promise in the context object
+interface RouteContext {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export async function GET(req: Request, { params }: Params) {
+export async function GET(req: NextRequest, { params }: RouteContext) {
   try {
     await connectDB();
-    const category = await Category.findById(params.id);
+    // Step 1: Await the params to get the ID
+    const { id } = await params;
+
+    const category = await Category.findById(id);
     if (!category) {
       return NextResponse.json(
         { error: "Category not found" },
@@ -25,12 +29,14 @@ export async function GET(req: Request, { params }: Params) {
   }
 }
 
-export async function PUT(req: Request, { params }: Params) {
+export async function PUT(req: NextRequest, { params }: RouteContext) {
   try {
     await connectDB();
+    const { id } = await params; // Step 1: Await the params
+
     const data = await req.json();
 
-    const category = await Category.findByIdAndUpdate(params.id, data, {
+    const category = await Category.findByIdAndUpdate(id, data, {
       new: true,
       runValidators: true,
     });
@@ -48,10 +54,12 @@ export async function PUT(req: Request, { params }: Params) {
   }
 }
 
-export async function DELETE(req: Request, { params }: Params) {
+export async function DELETE(req: NextRequest, { params }: RouteContext) {
   try {
     await connectDB();
-    const category = await Category.findByIdAndDelete(params.id);
+    const { id } = await params; // Step 1: Await the params
+
+    const category = await Category.findByIdAndDelete(id);
 
     if (!category) {
       return NextResponse.json(

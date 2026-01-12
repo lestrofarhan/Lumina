@@ -186,10 +186,10 @@ export default function CategoriesPage() {
       {modalType === "new-category" || modalType === "edit-category" ? (
         <CategoryModal
           type={modalType}
-          category={selectedCategory}
+          category={selectedCategory || undefined}
           isOpen={true}
           onClose={closeModal}
-          onSave={handleSave}
+          onSave={(data: any) => handleSave(data)}
         />
       ) : null}
 

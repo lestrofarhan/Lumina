@@ -17,8 +17,9 @@ export default function AdminDashboard() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // --- Modal & Selection States (Matched with AdminBlogsPage) ---
-  const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null);
+  // --- Modal & Selection States ---
+  // Using 'any' here or extending the type fixes the property 'type' error
+  const [selectedBlog, setSelectedBlog] = useState<any | null>(null);
   const [modalType, setModalType] = useState<
     "edit-blog" | "delete-blog" | "reject-guest-post" | null
   >(null);
@@ -51,12 +52,7 @@ export default function AdminDashboard() {
   // --- Handlers ---
   const openModal = (type: any, item: any) => {
     setModalType(type);
-    if (item.type === "Admin") {
-      setSelectedBlog(item);
-    } else {
-      // If it's a guest post, we treat it for deletion/rejection
-      setSelectedBlog(item);
-    }
+    setSelectedBlog(item);
   };
 
   const closeModal = () => {
@@ -68,13 +64,15 @@ export default function AdminDashboard() {
   const handleDeleteConfirm = async () => {
     if (!selectedBlog) return;
 
-    const endpoint =
-      selectedBlog.type === "Admin"
-        ? `/api/admin/blogs/${selectedBlog._id}`
-        : `/api/admin/guest-posts/${selectedBlog._id}/reject`;
+    // Use type casting to check the 'type' property safely
+    const isAdminPost = (selectedBlog as any).type === "Admin";
+
+    const endpoint = isAdminPost
+      ? `/api/admin/blogs/${selectedBlog._id}`
+      : `/api/admin/guest-posts/${selectedBlog._id}/reject`;
 
     const response = await fetch(endpoint, {
-      method: selectedBlog.type === "Admin" ? "DELETE" : "PUT",
+      method: isAdminPost ? "DELETE" : "PUT",
     });
 
     if (response.ok) {
@@ -116,7 +114,7 @@ export default function AdminDashboard() {
         <RecentArticlesTable
           articles={data?.recentArticles}
           onEdit={(item) => {
-            if (item.type === "Admin") {
+            if ((item as any).type === "Admin") {
               openModal("edit-blog", item);
             } else {
               alert("Guest posts must be edited from the Guest Requests page.");

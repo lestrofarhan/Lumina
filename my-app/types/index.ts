@@ -13,6 +13,7 @@ export interface Blog {
   status: "draft" | "published";
   createdAt: string;
   updatedAt: string;
+  views?: any;
 }
 
 export interface GuestPost {

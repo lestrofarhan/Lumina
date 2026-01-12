@@ -140,6 +140,8 @@ export default function AdminBlogsPage() {
         totalBlogs={filteredBlogs.length}
         onEdit={(blog) => openModal("edit-blog", blog)}
         onDelete={(blog) => openModal("delete-blog", blog)}
+        onNewBlog={() => {}}
+        onNewCategory={() => {}}
       />
 
       {/* --- MODALS --- */}

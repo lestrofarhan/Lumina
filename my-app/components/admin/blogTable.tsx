@@ -14,8 +14,8 @@ interface BlogTableProps {
   totalBlogs: number;
   onEdit: (blog: Blog) => void;
   onDelete: (blog: Blog) => void;
-  onNewBlog: () => void;
-  onNewCategory: () => void;
+  onNewBlog?: () => void; // Added ?
+  onNewCategory?: () => void; // Added ?
 }
 
 export default function BlogTable({

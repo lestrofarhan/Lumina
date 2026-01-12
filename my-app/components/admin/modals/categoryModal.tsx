@@ -1,13 +1,12 @@
-// components/admin/CategoryModal.tsx
 import { useState, useEffect } from "react";
 import { Category } from "@/types";
 
 interface CategoryModalProps {
   type: "new-category" | "edit-category";
-  category?: Category | string; // Can be category object or just category name
+  category?: Category | string;
   isOpen: boolean;
   onClose: () => void;
-  onSave: () => void;
+  onSave: (data?: any) => void; // Made data optional to be safe
 }
 
 export default function CategoryModal({
@@ -27,14 +26,12 @@ export default function CategoryModal({
   useEffect(() => {
     if (type === "edit-category" && category) {
       if (typeof category === "string") {
-        // If category is just a string (category name from blog)
         setFormData({
           name: category,
           slug: generateSlug(category),
           description: "",
         });
       } else {
-        // If category is a full Category object
         setFormData({
           name: category.name,
           slug: category.slug,
@@ -42,7 +39,6 @@ export default function CategoryModal({
         });
       }
     } else {
-      // Reset form for new category
       setFormData({
         name: "",
         slug: "",
@@ -72,10 +68,13 @@ export default function CategoryModal({
     setLoading(true);
 
     try {
+      // Get ID safely for the PUT request
+      const categoryId = typeof category !== "string" ? category?._id : null;
+
       const url =
         type === "new-category"
           ? "/api/admin/categories"
-          : `/api/admin/categories/${(category as Category)?._id}`;
+          : `/api/admin/categories/${categoryId}`;
 
       const method = type === "new-category" ? "POST" : "PUT";
 
@@ -88,7 +87,9 @@ export default function CategoryModal({
       });
 
       if (response.ok) {
-        onSave();
+        const result = await response.json();
+        // FIX: Pass the result to onSave to match the required signature
+        onSave(result);
         onClose();
       } else {
         const error = await response.json();
@@ -121,7 +122,7 @@ export default function CategoryModal({
             onClick={onClose}
             className="text-slate-400 hover:text-white transition-colors"
           >
-            <i className="fa-solid fa-xmark text-xl"></i>
+            X
           </button>
         </div>
 
@@ -136,7 +137,7 @@ export default function CategoryModal({
                 value={formData.name}
                 onChange={handleNameChange}
                 required
-                className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
+                className="w-full px-4 py-2 rounded-lg border border-slate-300 outline-none transition-all"
                 placeholder="e.g. Technology"
               />
             </div>
@@ -150,7 +151,7 @@ export default function CategoryModal({
                 onChange={(e) =>
                   setFormData({ ...formData, slug: e.target.value })
                 }
-                className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all bg-slate-50"
+                className="w-full px-4 py-2 rounded-lg border border-slate-300 outline-none transition-all bg-slate-50"
                 placeholder="auto-generated"
               />
             </div>
@@ -164,7 +165,7 @@ export default function CategoryModal({
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
                 }
-                className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
+                className="w-full px-4 py-2 rounded-lg border border-slate-300 outline-none transition-all"
                 placeholder="Brief description of the category"
               />
             </div>
@@ -175,23 +176,16 @@ export default function CategoryModal({
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 font-medium transition-colors disabled:opacity-50"
+              className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg font-medium transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading || !formData.name.trim()}
-              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
             >
-              {loading ? (
-                <>
-                  <i className="fa-solid fa-spinner fa-spin mr-2"></i>
-                  Saving...
-                </>
-              ) : (
-                "Save Category"
-              )}
+              {loading ? "Saving..." : "Save Category"}
             </button>
           </div>
         </form>

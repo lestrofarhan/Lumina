@@ -120,7 +120,7 @@ export default function AdminSidebar() {
                 <span className="font-medium tracking-wide">{link.name}</span>
 
                 {/* 2. Enhanced Dynamic Badge */}
-                {link.count   > 0 && (
+                {(link.count ?? 0) > 0 && (
                   <span
                     className={`ml-auto text-[11px] font-bold py-0.5 px-2 rounded-md relative flex items-center justify-center ${
                       active
