@@ -1,0 +1,387 @@
+@import "tailwindcss";
+
+@theme {
+  /* This ensures your 'primary' and 'slate' colors work across the app */
+  --color-primary-50: #eef2ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c7d2fe;
+  --color-primary-300: #a5b4fc;
+  --color-primary-400: #818cf8;
+  --color-primary-500: #6366f1;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
+  --color-primary-800: #3730a3;
+  --color-primary-900: #312e81;
+
+  /* Slate color palette for your admin dashboard */
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+
+  /* Success and Error colors */
+  --color-green-50: #f0fdf4;
+  --color-green-100: #dcfce7;
+  --color-green-600: #16a34a;
+  --color-green-700: #15803d;
+
+  --color-red-50: #fef2f2;
+  --color-red-100: #fee2e2;
+  --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+
+  --color-yellow-50: #fefce8;
+  --color-yellow-100: #fef9c3;
+  --color-yellow-600: #ca8a04;
+  --color-yellow-700: #a16207;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Custom Animations from your UI design */
+  --animate-fade-in: fadeIn 0.3s ease-out;
+  --animate-slide-up: slideUp 0.3s ease-out;
+  --animate-scale-in: scaleIn 0.2s ease-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(10px);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+}
+
+/* Base Styles */
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Utility for Alpine.js cloak */
+[x-cloak] {
+  display: none !important;
+}
+
+/* Modal backdrop blur effect */
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Smooth transitions for interactive elements */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Custom hover effects */
+.cat-styled-hover:hover {
+  background-color: #0F172B;
+  color: white;
+  transition: all 0.150s ease-in;
+}
+
+/* Button hover effects */
+.btn-hover-effect {
+  @apply transition-all duration-200 hover:scale-105 active:scale-95;
+}
+
+/* Table row hover effects */
+.table-row-hover {
+  @apply transition-colors duration-150 hover:bg-slate-50;
+}
+
+/* Modal animations */
+.modal-enter {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content-enter {
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Custom scrollbar for admin panels */
+.admin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-slate-300) transparent;
+}
+
+.admin-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.admin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--color-slate-300);
+  border-radius: 20px;
+}
+
+.admin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-slate-400);
+}
+
+/* Rich text editor custom styles */
+.rich-text-editor {
+  min-height: 300px;
+}
+
+.rich-text-editor-toolbar {
+  @apply bg-slate-50 border-b border-slate-300;
+}
+
+.rich-text-editor-toolbar button {
+  @apply p-1.5 hover:bg-slate-200 rounded text-slate-600 transition-colors;
+}
+
+.rich-text-editor-toolbar button.active {
+  @apply bg-slate-300 text-slate-900;
+}
+
+.rich-text-editor-content {
+  @apply focus:outline-none;
+}
+
+/* Status badges */
+.status-badge {
+  @apply px-2 py-1 rounded-full text-xs font-medium;
+}
+
+.status-published {
+  @apply bg-green-100 text-green-700;
+}
+
+.status-draft {
+  @apply bg-yellow-100 text-yellow-700;
+}
+
+.status-pending {
+  @apply bg-blue-100 text-blue-700;
+}
+
+.status-rejected {
+  @apply bg-red-100 text-red-700;
+}
+
+/* Form input focus styles */
+.form-input-focus {
+  @apply focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none;
+}
+
+/* Card styles for admin dashboard */
+.admin-card {
+  @apply bg-white rounded-xl border border-slate-200 shadow-sm;
+}
+
+.admin-card-header {
+  @apply px-6 py-4 border-b border-slate-200;
+}
+
+.admin-card-body {
+  @apply p-6;
+}
+
+/* Loading spinner */
+.spinner {
+  border: 2px solid var(--color-primary-100);
+  border-top: 2px solid var(--color-primary-600);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Page transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.page-transition-exit {
+  opacity: 1;
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Dropzone styles for file upload */
+.dropzone {
+  @apply border-2 border-dashed border-slate-300 rounded-lg p-8 text-center cursor-pointer transition-colors;
+}
+
+.dropzone:hover {
+  @apply border-primary-500;
+}
+
+.dropzone.dragging {
+  @apply border-primary-500 bg-primary-50;
+}
+
+/* Progress bar animation */
+.progress-bar {
+  transition: width 0.3s ease-in-out;
+}
+
+/* Tooltip styles */
+.tooltip {
+  @apply absolute z-50 px-2 py-1 text-xs font-medium text-white bg-slate-900 rounded shadow-lg;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.tooltip::after {
+  content: '';
+  @apply absolute -bottom-1 left-1/2 w-2 h-2 bg-slate-900;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* Responsive table adjustments */
+@media (max-width: 768px) {
+  .responsive-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+/* Dark mode support (if needed) */
+@media (prefers-color-scheme: dark) {
+
+
+  .admin-card {
+    @apply bg-slate-800 border-slate-700;
+  }
+
+  .admin-card-header {
+    @apply border-slate-700;
+  }
+
+  .table-row-hover {
+    @apply hover:bg-slate-700;
+  }
+
+  .rich-text-editor-toolbar {
+    @apply bg-slate-700 border-slate-600;
+  }
+
+  .rich-text-editor-toolbar button {
+    @apply hover:bg-slate-600 text-slate-300;
+  }
+
+  .admin-scrollbar::-webkit-scrollbar-thumb {
+    background-color: var(--color-slate-600);
+  }
+
+  .admin-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-slate-500);
+  }
+}
+
+/* Print styles for admin reports */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+
+  .admin-card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+}
+
+
+/* Custom Blog Content Overrides */
+.blog-content h2 {
+  @apply text-3xl font-black text-slate-900 mt-10 mb-4 block;
+}
+
+.blog-content h3 {
+  @apply text-xl font-bold text-slate-800 mt-8 mb-3 block;
+}
+
+.blog-content p {
+  @apply text-slate-600 leading-relaxed mb-6 block;
+}
+
+.blog-content ul {
+  @apply list-disc list-inside mb-6 space-y-2 text-slate-600;
+}
+
+.blog-content li {
+  @apply ml-4;
+}
+
+.blog-content blockquote {
+  @apply border-l-4 border-indigo-500 bg-slate-50 py-4 px-6 rounded-r-xl italic my-8 text-slate-700;
+}
